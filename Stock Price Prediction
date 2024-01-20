@@ -1,0 +1,36 @@
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+amzn = yf.Ticker("AMZN")
+aapl = yf.Ticker("AAPL")
+goog = yf.Ticker("GOOG")
+msft = yf.Ticker("MSFT")
+print(amzn)
+yfinance.Ticker object <AMZN>
+ 
+amzn5y=amzn.history(period='5y', interval='1mo')
+aapl5y=aapl.history(period='5y', interval='1mo')
+goog5y=goog.history(period='5y', interval='1mo')
+msft5y=msft.history(period='5y', interval='1mo')
+amzn5y.to_csv('amzn5y.csv')
+aapl5y.to_csv('aapl5y.csv')
+goog5y.to_csv('goog5y.csv')
+msft5y.to_csv('msft5y.csv')
+amazon = pd.read_csv('amzn5y.csv')
+apple = pd.read_csv('aapl5y.csv')
+google = pd.read_csv('goog5y.csv')
+microsoft = pd.read_csv('msft5y.csv')
+google.head()
+
+dfs= [amazon, apple, google, microsoft]
+for df in dfs:
+    df['Previous day volume']= df.Volume.shift(1)
+    df['Change in volume']= df['Volume']- df['Previous day volume']
+    df['Percent change in volume']= df.Volume.pct_change()
+google.head()
+
+for df in dfs:
+    df['Previous day close price']= df.Close.shift(1)
+    df['Change in price']= df['Close']- df['Previous day close price']
+    df['Percent change in price']= df['Change in price']/ df['Previous day close price']
+apple.head()
